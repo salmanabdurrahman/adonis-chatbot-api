@@ -62,4 +62,59 @@ export default class ChatbotsController {
       })
     }
   }
+
+  public async getConversations({ request, response }: HttpContextContract) {
+    try {
+      const page = request.input('page', 1)
+      const limit = request.input('limit', 10)
+
+      const conversations = await Conversation.query()
+        .preload('messages', (messageQuery) => {
+          messageQuery.orderBy('createdAt', 'asc')
+        })
+        .orderBy('createdAt', 'desc')
+        .paginate(page, limit)
+
+      return response.ok(conversations.toJSON())
+    } catch (error) {
+      console.error(
+        'Error occurred while fetching conversations:',
+        error.response?.data || error.message
+      )
+
+      return response.internalServerError({
+        message: 'Terjadi kesalahan saat memproses permintaan Anda.',
+        error: error.message,
+      })
+    }
+  }
+
+  public async getConversationById({ request, response }: HttpContextContract) {
+    try {
+      const conversationId = request.param('id')
+
+      const conversation = await Conversation.query()
+        .preload('messages', (messageQuery) => {
+          messageQuery.orderBy('createdAt', 'asc')
+        })
+        .where('id', conversationId)
+        .firstOrFail()
+
+      return response.ok(conversation.toJSON())
+    } catch (error) {
+      if (error.code === 'E_ROW_NOT_FOUND') {
+        return response.notFound({ message: 'Percakapan tidak ditemukan.' })
+      }
+
+      console.error(
+        'Error occurred while fetching conversation by ID:',
+        error.response?.data || error.message
+      )
+
+      return response.internalServerError({
+        message: 'Terjadi kesalahan saat memproses permintaan Anda.',
+        error: error.message,
+      })
+    }
+  }
 }

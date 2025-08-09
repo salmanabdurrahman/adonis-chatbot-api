@@ -25,3 +25,5 @@ Route.get('/', async () => {
 })
 
 Route.post('/questions', 'ChatbotsController.sendMessage')
+Route.get('/conversations', 'ChatbotsController.getConversations')
+Route.get('/conversations/:id', 'ChatbotsController.getConversationById')
