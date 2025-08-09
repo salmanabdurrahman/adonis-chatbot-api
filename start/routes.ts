@@ -25,5 +25,9 @@ Route.get('/', async () => {
 })
 
 Route.post('/questions', 'ChatbotsController.sendMessage')
-Route.get('/conversations', 'ChatbotsController.getConversations')
-Route.get('/conversations/:id', 'ChatbotsController.getConversationById')
+
+Route.group(() => {
+  Route.get('/', 'ChatbotsController.getConversations')
+  Route.get('/:id', 'ChatbotsController.getConversationById')
+  Route.delete('/:id', 'ChatbotsController.deleteConversation')
+}).prefix('/conversations')

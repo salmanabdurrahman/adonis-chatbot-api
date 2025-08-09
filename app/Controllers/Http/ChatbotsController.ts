@@ -117,4 +117,29 @@ export default class ChatbotsController {
       })
     }
   }
+
+  public async deleteConversation({ request, response }: HttpContextContract) {
+    try {
+      const conversationId = request.param('id')
+
+      const conversation = await Conversation.findOrFail(conversationId)
+      await conversation.delete()
+
+      return response.ok({ message: 'Percakapan berhasil dihapus.' })
+    } catch (error) {
+      if (error.code === 'E_ROW_NOT_FOUND') {
+        return response.notFound({ message: 'Percakapan tidak ditemukan.' })
+      }
+
+      console.error(
+        'Error occurred while deleting conversation:',
+        error.response?.data || error.message
+      )
+
+      return response.internalServerError({
+        message: 'Terjadi kesalahan saat memproses permintaan Anda.',
+        error: error.message,
+      })
+    }
+  }
 }
