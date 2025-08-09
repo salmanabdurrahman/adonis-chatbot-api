@@ -24,6 +24,7 @@ Route.get('/', async () => {
   return { hello: 'world' }
 })
 
+Route.post('/login', 'AuthController.login')
 Route.post('/questions', 'ChatbotsController.sendMessage')
 
 Route.group(() => {
@@ -32,4 +33,4 @@ Route.group(() => {
   Route.delete('/:id', 'ChatbotsController.deleteConversation')
 })
   .prefix('/conversations')
-  .middleware('apiKey')
+  .middleware('auth:api')
