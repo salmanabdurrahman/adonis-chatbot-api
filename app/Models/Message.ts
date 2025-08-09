@@ -1,14 +1,20 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeCreate, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import Conversation from './Conversation'
+import { v4 as uuidv4 } from 'uuid'
 
 export type SenderType = 'user' | 'bot'
 
 export default class Message extends BaseModel {
   public static table = 'chatbot.messages'
 
+  @beforeCreate()
+  public static async assignUuid(message: Message) {
+    message.id = uuidv4()
+  }
+
   @column({ isPrimary: true })
-  public id: number
+  public id: string
 
   @column()
   public conversationId: string
