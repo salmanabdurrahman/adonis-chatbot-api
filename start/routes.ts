@@ -30,4 +30,6 @@ Route.group(() => {
   Route.get('/', 'ChatbotsController.getConversations')
   Route.get('/:id', 'ChatbotsController.getConversationById')
   Route.delete('/:id', 'ChatbotsController.deleteConversation')
-}).prefix('/conversations')
+})
+  .prefix('/conversations')
+  .middleware('apiKey')
